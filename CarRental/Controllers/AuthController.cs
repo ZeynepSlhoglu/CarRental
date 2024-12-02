@@ -1,4 +1,5 @@
 ﻿using CarRental.CarRental.Application.Auth;
+using CarRental.CarRental.Domain.Roles;
 using CarRental.CarRental.Domain.Users;
 using CarRental.CarRental.Infrastructure.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace CarRental.Controllers
             return View();
         }
         public async Task<IActionResult> RegisterFunc(User user, string password)
-        {
+        { 
             var result = await _authService.RegisterAsync(user, password);
             if (result != "Kullanıcı kaydı başarılı.")
             {

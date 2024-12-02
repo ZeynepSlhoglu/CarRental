@@ -1,0 +1,141 @@
+﻿@model IEnumerable<CarRental.Models.VehicleViewModel>
+
+@{
+    ViewData["Title"] = "Araç Çalışma Süresi İstatistikleri Veri Girişi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Araç Adı</th>
+            <th>Plaka</th>
+            <th>Aktif Çalışma Süresi (Saat)</th>
+            <th>Bakım Süresi (Saat)</th>
+            <th>Boşta Bekleme Süresi (Saat)</th>
+            <th>Toplam Çalışma Süresi (Saat)</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vehicle in Model)
+        {
+            <tr id="vehicle-@vehicle.Name">
+                <td>@vehicle.Name</td>
+                <td>@vehicle.Plate</td>
+                <td>@vehicle.ActiveWorkTime</td>
+                <td>@vehicle.MaintenanceTime</td>
+                <td>@vehicle.IdleTime</td>
+                <td>@vehicle.TotalWorkTime</td>
+                <td>
+                    <button type="button" class="btn btn-warning editBtn" data-id="@vehicle.Id"
+                            data-active="@vehicle.ActiveWorkTime" data-maintenance="@vehicle.MaintenanceTime"
+                            data-bs-toggle="modal" data-bs-target="#editModal">
+                        Düzenle
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Düzenleme Modalı -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Araç Çalışma Süresi Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="vehicleId" name="Id" />
+
+                    <div class="form-group">
+                        <label for="activeWorkTime">Aktif Çalışma Süresi (Saat)</label>
+                        <input type="text" class="form-control" id="activeWorkTime" name="ActiveWorkTime" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maintenanceTime">Bakım Süresi (Saat)</label>
+                        <input type="text" class="form-control" id="maintenanceTime" name="MaintenanceTime" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" id="saveButton">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+             
+
+            $('.editBtn').click(function () {
+                var vehicleId = $(this).data('id');
+                var activeWorkTime = $(this).data('active');
+                var maintenanceTime = $(this).data('maintenance');
+
+                $('#vehicleId').val(vehicleId);
+                $('#activeWorkTime').val(activeWorkTime);
+                $('#maintenanceTime').val(maintenanceTime);
+            });
+
+            $('#saveButton').click(function (e) {
+                e.preventDefault();
+
+                // Kullanıcının girdiği verileri alıyoruz ve virgül varsa, noktaya çeviriyoruz
+                var activeWorkTime = $('#activeWorkTime').val().replace(',', '.');
+                var maintenanceTime = $('#maintenanceTime').val().replace(',', '.');
+
+                // Sayıları doğru biçimde parse et
+                var activeWorkTime = parseFloat($('#activeWorkTime').val().replace(',', '.')).toFixed(2);
+                var maintenanceTime = parseFloat($('#maintenanceTime').val().replace(',', '.')).toFixed(2);
+
+
+                // Eğer geçerli bir sayı değilse, kullanıcıya hata mesajı göster
+                if (isNaN(activeWorkTime) || isNaN(maintenanceTime)) {
+                    alert("Lütfen geçerli bir sayı girin.");
+                    return;
+                }
+
+                // Toplam çalışma süresi 168'i geçmemeli
+                var totalTime = activeWorkTime + maintenanceTime;
+                if (totalTime > 168) {
+                    alert("Aktif Çalışma Süresi ve Bakım Süresi toplamı 168 saati geçemez.");
+                    return;
+                }
+
+                var vehicleId = $('#vehicleId').val();
+
+                $.ajax({
+                    url: '/Vehicle/UpdateWorkTimes',
+                    type: 'POST',
+                    data: {
+                        id: vehicleId,
+                        activeWorkTime: activeWorkTime,
+                        maintenanceTime: maintenanceTime
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert("Hata: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Hata: " + xhr.responseText);
+                    }
+                });
+            });
+
+        });
+    </script>
+}

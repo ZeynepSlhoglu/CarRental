@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CarRental.CarRental.Domain.Vehicles
+﻿ namespace CarRental.CarRental.Domain.Vehicles
 {
     public class Vehicle
     {
-        public Guid Id { get; set; } //guid olcak
-        public string Brand { get; set; } = string.Empty;
-        public string Model { get; set; } = string.Empty;
-        public string Plate { get; set; } = string.Empty;
+        public Guid Id { get; set; }   
+        public string Name { get; set; }   
+        public string Plate { get; set; }   
+        public double ActiveWorkTime { get; set; }  // Aktif çalışma süresi (saat)
+        public double MaintenanceTime { get; set; }  // Bakım süresi (saat)
+        public double IdleTime => TotalWorkTime - (ActiveWorkTime + MaintenanceTime); // Boşta bekleme süresi (saat) 
+        public double TotalWorkTime => 7 * 24;  // Toplam çalışma süresi: 7 gün x 24 saat
+         
+        // Aktif çalışma süresi oranı (Yüzde)
+        public double ActiveWorkTimePercentage => (ActiveWorkTime / TotalWorkTime) * 100;
+
+        // Boşta bekleme süresi oranı (Yüzde)
+        public double IdleTimePercentage => (IdleTime / TotalWorkTime) * 100;
     }
 }

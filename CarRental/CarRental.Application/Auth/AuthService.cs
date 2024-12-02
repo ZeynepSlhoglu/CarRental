@@ -32,7 +32,7 @@ namespace CarRental.CarRental.Application.Auth
                 return "Bu kullanıcı adı zaten alınmış.";
             }
              
-            var userRole = await _userRepository.GetRoleByNameAsync("Admin");
+            var userRole = await _userRepository.GetRoleByNameAsync("User");
             if (userRole == null)
             {
                 return "Rol bulunamadı.";

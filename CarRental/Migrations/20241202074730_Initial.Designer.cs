@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarRental.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241201175521_Initial")]
+    [Migration("20241202074730_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -66,22 +66,23 @@ namespace CarRental.Migrations
 
             modelBuilder.Entity("CarRental.CarRental.Domain.Vehicles.Vehicle", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<double>("ActiveWorkTime")
+                        .HasColumnType("double precision");
 
-                    b.Property<string>("Brand")
+                    b.Property<double>("MaintenanceTime")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Model")
+                    b.Property<string>("Plate")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
