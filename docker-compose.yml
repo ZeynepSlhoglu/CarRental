@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: carrental_postgres
+    restart: always
+    volumes:
+      - carrental-postgres-data:/var/lib/postgresql/data
+    command: postgres -c 'max_connections=250'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: myPassw0rd
+      POSTGRES_DB: carrentaldb
+      TZ: Europe/Istanbul
+    ports:
+      - "5432:5432"
+    networks:
+      - carrental-network
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: carrental_pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@carrental.com
+      PGADMIN_DEFAULT_PASSWORD: myPassw0rd
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"
+    volumes:
+      - carrental-pgadmin4-data:/var/lib/pgadmin
+    networks:
+      - carrental-network
+
+volumes:
+  carrental-postgres-data:
+  carrental-pgadmin4-data:
+
+networks:
+  carrental-network:
+    name: carrental-network
+    driver: bridge
+
+

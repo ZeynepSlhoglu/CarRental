@@ -1,0 +1,243 @@
+﻿@model IEnumerable<CarRental.CarRental.Domain.Vehicles.Vehicle>
+
+@{
+    ViewData["Title"] = "Araç Yönetimi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Araç Ekle Butonu -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Araç Ekle
+</button>
+
+<!-- Araçlar Tablosu -->
+<table class="table table-bordered mt-3" id="vehiclesTable">
+    <thead>
+        <tr>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Yıl</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vehicle in Model)
+        {
+            <tr id="vehicle-@vehicle.Id">
+                <td>@vehicle.Brand</td>
+                <td>@vehicle.Model</td>
+                <td>@vehicle.Year</td>
+                <td>
+                    <!-- Düzenleme Butonu -->
+                    <button class="btn btn-warning" onclick="editVehicle('@vehicle.Id')">Düzenle</button>
+                    <!-- Silme Butonu -->
+                    <button class="btn btn-danger delete-button" data-id="@vehicle.Id" data-bs-toggle="modal" data-bs-target="#deleteModal">Sil</button>
+               
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vehicleModalLabel">Araç Ekle/Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm">
+                    <!-- Vehicle Id (Hidden) -->
+                    <input type="hidden" id="vehicleId" name="Id" />
+
+                    <!-- Brand -->
+                    <div class="form-group">
+                        <label for="brand">Marka</label>
+                        <input type="text" class="form-control" id="brand" name="Brand" placeholder="Marka" required />
+                    </div>
+
+                    <!-- Model -->
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" name="Model" placeholder="Model" required />
+                    </div>
+
+                    <!-- Year -->
+                    <div class="form-group">
+                        <label for="year">Yıl</label>
+                        <input type="number" class="form-control" id="year" name="Year" placeholder="Yıl" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="saveButton">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* <!-- Araç Ekleme ve Düzenleme Modalı -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="vehicleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vehicleModalLabel">Araç Ekle/Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm">
+                    <input type="hidden" id="vehicleId" />
+                    <div class="form-group">
+                        <label for="brand">Marka</label>
+                        <input type="text" class="form-control" id="brand" placeholder="Marka" />
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" placeholder="Model" />
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Yıl</label>
+                        <input type="number" class="form-control" id="year" placeholder="Yıl" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="saveButton">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+<!-- Silme Onayı Modalı -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Silme Onayı</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Silmek istediğinizden emin misiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script> 
+
+        $(document).ready(function () {
+            $("#saveButton").click(function (e) {
+                debugger;
+                e.preventDefault(); // Formun varsayılan gönderimini durdur
+
+                // Formdan veri toplama
+                var formData = new FormData();
+                formData.append("Id", $("#vehicleId").val()); // ID
+                formData.append("Brand", $("#brand").val()); // Marka
+                formData.append("Model", $("#model").val()); // Model
+                formData.append("Year", $("#year").val()); // Yıl
+
+                // AJAX isteği
+                $.ajax({
+                    url: '/Vehicle/CreateFunc',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false, // FormData ile kullanıldığında false olmalı
+                    processData: false, // jQuery'nin veriyi işleme sürecini devre dışı bırak
+                    success: function (response) {
+                        alert("Araç kaydı başarılı.");
+                        $('#exampleModal').modal('hide'); // Modalı kapat
+                        location.reload(); // Sayfayı yenile
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Hata: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        @*
+        // Araç düzenleme modalı
+        function editVehicle(id) {
+        $.get(`/Vehicle/Edit?id=${id}`, function (data) {
+        $('#vehicleId').val(data.id);
+        $('#brand').val(data.brand);
+        $('#model').val(data.model);
+        $('#year').val(data.year);
+        $('#saveButton').text('Güncelle');
+        });
+        }
+        *@
+
+      
+        let vehicleIdToDelete = null;
+
+        $(document).on('click', '.delete-button', function () {
+            // Silinecek aracın ID'sini al
+            vehicleIdToDelete = $(this).data('id');
+            console.log("Silmek için seçilen ID:", vehicleIdToDelete);
+        });
+
+        $('#confirmDeleteButton').click(function () {
+            if (vehicleIdToDelete) {
+                $.ajax({
+                    url: `/Vehicle/Delete?id=${vehicleIdToDelete}`,
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('#vehicle-' + vehicleIdToDelete).remove();
+                            $('#deleteModal').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Hata: " + xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Araç ID'si alınamadı.");
+            }
+        });
+
+
+        // // Form submit işlemi
+        // $('#vehicleForm').submit(function(e) {
+        // e.preventDefault();
+        // const vehicle = {
+        // id: $('#vehicleId').val(),
+        // brand: $('#brand').val(),
+        // model: $('#model').val(),
+        // year: $('#year').val()
+        // };
+
+        // const url = vehicle.id ? `/Vehicle/Edit` : `/Vehicle/Create`;
+
+        // $.post(url, vehicle, function(response) {
+        // if (response.success) {
+        // alert(response.message);
+        // $('#vehicleModal').modal('hide');
+        // location.reload(); // Sayfayı yenileyerek tablonun güncellenmesini sağla
+        // } else {
+        // alert(response.message);
+        // }
+        // });
+        // });
+    </script>
+}

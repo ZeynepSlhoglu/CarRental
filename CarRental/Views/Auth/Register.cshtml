@@ -1,0 +1,28 @@
+﻿@model CarRental.Models.UserViewModel
+
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card" style="width: 30rem;">
+        <div class="card-body">
+            <h5 class="card-title text-center">Kayıt Ol</h5>
+            <form method="post" action="/Auth/RegisterFunc">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Kullanıcı Adı</label>
+                    <input type="text" class="form-control" id="username" name="user.Username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Şifre Tekrarı</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Kayıt Ol</button>
+            </form>
+            <div class="text-center mt-3">
+                <p>Zaten hesabınız var mı? <a href="/Auth/Login">Giriş Yap</a></p>
+            </div>
+        </div>
+    </div>
+</div>  

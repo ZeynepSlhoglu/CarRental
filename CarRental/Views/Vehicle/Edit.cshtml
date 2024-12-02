@@ -1,0 +1,35 @@
+﻿@model CarRental.CarRental.Domain.Vehicles.Vehicle
+@{
+    ViewData["Title"] = "Araç Düzenle";
+}
+
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="vehicleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vehicleModalLabel">Araç Ekle/Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm">
+                    <input type="hidden" id="vehicleId" />
+                    <div class="form-group">
+                        <label for="brand">Marka</label>
+                        <input type="text" class="form-control" id="brand" placeholder="Marka" />
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" placeholder="Model" />
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Yıl</label>
+                        <input type="number" class="form-control" id="year" placeholder="Yıl" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="saveButton">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
