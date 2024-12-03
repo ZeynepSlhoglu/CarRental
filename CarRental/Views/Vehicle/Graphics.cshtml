@@ -19,8 +19,7 @@
             var activeWorkTimes = @Html.Raw(Json.Serialize(ViewBag.ActiveWorkTimes));
             var idleTimes = @Html.Raw(Json.Serialize(ViewBag.IdleTimes));
             var labels = @Html.Raw(Json.Serialize(ViewBag.Labels));
-
-            // Aktif Çalışma Süresi Grafiği
+             
             var ctx1 = document.getElementById('activeWorkTimeChart').getContext('2d');
             var activeWorkTimeChart = new Chart(ctx1, {
                 type: 'bar',

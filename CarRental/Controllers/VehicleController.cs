@@ -1,9 +1,7 @@
 ﻿using CarRental.CarRental.Application.Vehicles;
-using CarRental.CarRental.Domain.Vehicles;
-using CarRental.Models;
+using CarRental.CarRental.Domain.Vehicles; 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace CarRental.Controllers
 {
@@ -21,118 +19,74 @@ namespace CarRental.Controllers
         {
             var vehicles = await _vehicleService.GetAllVehiclesAsync();
             return View(vehicles);
-        }  
+        }
+
         public async Task<IActionResult> CreateFunc(Vehicle vehicle)
         {
             var result = await _vehicleService.AddVehicleAsync(vehicle);
-            if (result == "Araç kaydı başarılı.")
+            if (result.SuccessStatus)
             {
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("", result);
 
+            ModelState.AddModelError("", result.Message);
             return View(vehicle);
         }
-         
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditFunc(Vehicle vehicle)
         {
             var result = await _vehicleService.UpdateVehicleAsync(vehicle);
-            if (result == "Araç güncelleme başarılı.")
+            if (result.SuccessStatus)
             {
                 return RedirectToAction("Index");
             }
+
             return View(vehicle);
         }
-         
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _vehicleService.DeleteVehicleAsync(id);
-            if (result == "Araç silme işlemi başarılı.")
+            if (result.SuccessStatus)
             {
                 return RedirectToAction("Index");
             }
-            return BadRequest(result);
+
+            return BadRequest(result.Message);
         }
 
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Statistics()
         {
-            var vehicles = await _vehicleService.GetAllVehiclesAsync();
-
-            var vehicleViewModels = vehicles.Select(v => new VehicleViewModel
-            {
-                Id = v.Id,
-                Name = v.Name,
-                Plate = v.Plate,
-                ActiveWorkTime = v.ActiveWorkTime,
-                MaintenanceTime = v.MaintenanceTime
-            }).ToList();
-
+            var vehicleViewModels = await _vehicleService.GetVehicleStatisticsAsync();
             return View(vehicleViewModels);
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Graphics()
-        { 
-            var vehicles = await _vehicleService.GetAllVehiclesAsync();
-             
-            var vehicleViewModels = vehicles.Select(v => new VehicleViewModel
-            {
-                Id = v.Id,
-                Name = v.Name,
-                Plate = v.Plate,
-                ActiveWorkTime = v.ActiveWorkTime,
-                MaintenanceTime = v.MaintenanceTime
-            }).ToList();
-             
-            var activeWorkTimes = vehicleViewModels.Select(v => v.ActiveWorkTimePercentage).ToList();
-            var idleTimes = vehicleViewModels.Select(v => v.IdleTimePercentage).ToList();
-            var labels = vehicleViewModels.Select(v => v.Name).ToList();
-             
-            ViewBag.ActiveWorkTimes = activeWorkTimes;
-            ViewBag.IdleTimes = idleTimes;
-            ViewBag.Labels = labels;
+        {
+            var graphData = await _vehicleService.GetVehicleGraphDataAsync();
 
-            return View(vehicleViewModels);
+            ViewBag.ActiveWorkTimes = graphData.ActiveWorkTimes;
+            ViewBag.IdleTimes = graphData.IdleTimes;
+            ViewBag.Labels = graphData.Labels;
+
+            return View(graphData.VehicleViewModels);
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateWorkTimes(Guid id, string activeWorkTime, string maintenanceTime)
         {
-            // Ondalık ayracın doğru şekilde yorumlanması için InvariantCulture kullanın
-            if (!double.TryParse(activeWorkTime, NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedActiveWorkTime) ||
-                !double.TryParse(maintenanceTime, NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedMaintenanceTime))
+            var result = await _vehicleService.UpdateWorkTimesAsync(id, activeWorkTime, maintenanceTime);
+
+            if (result.SuccessStatus)
             {
-                return Json(new { success = false, message = "Geçersiz sayı formatı." });
+                return Json(new { success = true, message = result.Message });
             }
 
-            // Toplam süre kontrolü
-            if (parsedActiveWorkTime + parsedMaintenanceTime > 168)
-            {
-                return Json(new { success = false, message = "Aktif Çalışma Süresi ve Bakım Süresi toplamı 168 saati geçemez." });
-            }
-
-            var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            vehicle.ActiveWorkTime = parsedActiveWorkTime;
-            vehicle.MaintenanceTime = parsedMaintenanceTime;
-
-            var result = await _vehicleService.UpdateVehicleAsync(vehicle);
-            if (result == "Araç güncelleme başarılı.")
-            {
-                return Json(new { success = true, message = "Araç başarıyla güncellendi." });
-            }
-            else
-            {
-                return Json(new { success = false, message = result });
-            }
+            return Json(new { success = false, message = result.Message });
         }
-
-
-
-
     }
 }

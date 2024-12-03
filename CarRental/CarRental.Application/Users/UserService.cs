@@ -1,4 +1,7 @@
-﻿using CarRental.CarRental.Domain.Users;
+﻿using CarRental.CarRental.Application.Common;
+using CarRental.CarRental.Application.Users;
+using CarRental.CarRental.Domain.Users;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 
 namespace CarRental.CarRental.Application.Users
@@ -7,41 +10,30 @@ namespace CarRental.CarRental.Application.Users
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
+        public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, IValidator<User> userValidator)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _userValidator = userValidator;
         }
 
-        public async Task<User> GetUserByIdAsync(Guid id)
-        {
-            return await _userRepository.GetByIdAsync(id);
-        }
+        public async Task<User> GetUserByIdAsync(Guid id) => await _userRepository.GetByIdAsync(id);
+       
+         
+        public async Task<User> GetUserByUsernameAsync(string username) => await _userRepository.GetByUsernameAsync(username);
 
-        public async Task<User> GetUserByUsernameAsync(string username)
-        {
-            return await _userRepository.GetByUsernameAsync(username);
-        }
-
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            return await _userRepository.GetAllAsync();
-        }
-
-        public async Task RegisterUserAsync(User user, string password)
-        {
-            user.PasswordHash = _passwordHasher.HashPassword(user, password);
-            await _userRepository.AddAsync(user);
-        }
-
-        public async Task<bool> ValidateUserAsync(string username, string password)
+        public async Task<IEnumerable<User>> GetAllUsersAsync() => await _userRepository.GetAllAsync();
+         
+        public async Task<ServiceResult> ValidateUserAsync(string username, string password)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
-            if (user == null) return false;
-
-            return _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password) == PasswordVerificationResult.Success;
+            return user == null || _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password) != PasswordVerificationResult.Success
+                ? ServiceResult.Failure("Kullanıcı adı veya şifre hatalı.")
+                : ServiceResult.Success("Giriş başarılı.");
         }
+
     }
 }
-
+ 

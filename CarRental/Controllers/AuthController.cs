@@ -1,7 +1,5 @@
-﻿using CarRental.CarRental.Application.Auth;
-using CarRental.CarRental.Domain.Roles;
-using CarRental.CarRental.Domain.Users;
-using CarRental.CarRental.Infrastructure.Users;
+﻿using CarRental.CarRental.Application.Auth; 
+using CarRental.CarRental.Domain.Users; 
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRental.Controllers
@@ -22,9 +20,9 @@ namespace CarRental.Controllers
         public async Task<IActionResult> LoginFunc(string username, string password)
         {
             var result = await _authService.LoginAsync(username, password);
-            if (result != "Giriş başarılı.")
+            if (!result.SuccessStatus)
             {
-                return Unauthorized(result);
+                return Unauthorized(result.Message);
             }
 
             return RedirectToAction("Index", "Home");
@@ -35,11 +33,11 @@ namespace CarRental.Controllers
             return View();
         }
         public async Task<IActionResult> RegisterFunc(User user, string password)
-        { 
+        {
             var result = await _authService.RegisterAsync(user, password);
-            if (result != "Kullanıcı kaydı başarılı.")
+            if (!result.SuccessStatus)
             {
-                return BadRequest(result);
+                return BadRequest(result.Message);
             }
 
             return RedirectToAction("Login");
@@ -47,7 +45,12 @@ namespace CarRental.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _authService.LogoutAsync();
+            var result = await _authService.LogoutAsync();
+            if (!result.SuccessStatus)
+            {
+                return BadRequest(result.Message);
+            }
+
             return RedirectToAction("Login", "Auth");
         }
          

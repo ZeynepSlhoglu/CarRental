@@ -1,4 +1,5 @@
-﻿using CarRental.CarRental.Domain.Users;
+﻿using CarRental.CarRental.Application.Common;
+using CarRental.CarRental.Domain.Users;
 
 namespace CarRental.CarRental.Application.Users
 {
@@ -6,8 +7,7 @@ namespace CarRental.CarRental.Application.Users
     {
         Task<User> GetUserByIdAsync(Guid id);
         Task<User> GetUserByUsernameAsync(string username);
-        Task<IEnumerable<User>> GetAllUsersAsync();
-        Task RegisterUserAsync(User user, string password);
-        Task<bool> ValidateUserAsync(string username, string password);
+        Task<IEnumerable<User>> GetAllUsersAsync(); 
+        Task<ServiceResult> ValidateUserAsync(string username, string password);
     }
 }

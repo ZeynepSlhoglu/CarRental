@@ -9,5 +9,6 @@ namespace CarRental.CarRental.Domain.Vehicles
 {
     public interface IVehicleRepository : IBaseRepository<Vehicle>
     {
+        Task<List<Vehicle>> GetVehiclesWithStatisticsAsync();
     }
 }
