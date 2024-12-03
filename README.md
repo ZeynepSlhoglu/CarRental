@@ -35,8 +35,7 @@ Projede Onion Architecture prensipleri simüle edilmiştir. Katmanlar şu şekil
 ## Kurulum Adımları
 ### Gereksinimler
 - **.NET 8 SDK**  
-- **Docker Desktop**  
-- **Node.js**  
+- **Docker Desktop**   
 
 ### Adımlar
 1. **Projeyi Klonlayın**:
@@ -48,7 +47,7 @@ Projede Onion Architecture prensipleri simüle edilmiştir. Katmanlar şu şekil
 Docker Compose ile servisleri başlatmak için aşağıdaki komutu çalıştırın:
 
 ```bash 
-docker-compose up -d
+docker compose up -d
  
 docker run 
 ```
@@ -60,13 +59,7 @@ Migration oluşturmak için aşağıdaki komutu çalıştırabilirsiniz:
 
 ```bash 
 dotnet ef migrations add InitialCreate
-```
-
-5. **Uygulamayı Çalıştırın**
-Aşağıdaki komutu çalıştırarak projeyi başlatabilirsiniz:
-
-```bash 
-dotnet run
+dotnet ef migrations update
 ```
 
 
