@@ -6,39 +6,42 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Araç Adı</th>
-            <th>Plaka</th>
-            <th>Aktif Çalışma Süresi (Saat)</th>
-            <th>Bakım Süresi (Saat)</th>
-            <th>Boşta Bekleme Süresi (Saat)</th>
-            <th>Toplam Çalışma Süresi (Saat)</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var vehicle in Model)
-        {
-            <tr id="vehicle-@vehicle.Name">
-                <td>@vehicle.Name</td>
-                <td>@vehicle.Plate</td>
-                <td>@vehicle.ActiveWorkTime</td>
-                <td>@vehicle.MaintenanceTime</td>
-                <td>@vehicle.IdleTime</td>
-                <td>@vehicle.TotalWorkTime</td>
-                <td>
-                    <button type="button" class="btn btn-warning editBtn" data-id="@vehicle.Id"
-                            data-active="@vehicle.ActiveWorkTime" data-maintenance="@vehicle.MaintenanceTime"
-                            data-bs-toggle="modal" data-bs-target="#editModal">
-                        Düzenle
-                    </button>
-                </td>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Araç Adı</th>
+                <th>Plaka</th>
+                <th>Aktif Çalışma Süresi (Saat)</th>
+                <th>Bakım Süresi (Saat)</th>
+                <th>Boşta Bekleme Süresi (Saat)</th>
+                <th>Toplam Çalışma Süresi (Saat)</th>
+                <th>İşlemler</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in Model)
+            {
+                <tr id="vehicle-@vehicle.Name">
+                    <td>@vehicle.Name</td>
+                    <td>@vehicle.Plate</td>
+                    <td>@vehicle.ActiveWorkTime</td>
+                    <td>@vehicle.MaintenanceTime</td>
+                    <td>@vehicle.IdleTime</td>
+                    <td>@vehicle.TotalWorkTime</td>
+                    <td>
+                        <button type="button" class="btn btn-warning editBtn" data-id="@vehicle.Id"
+                                data-active="@vehicle.ActiveWorkTime" data-maintenance="@vehicle.MaintenanceTime"
+                                data-bs-toggle="modal" data-bs-target="#editModal">
+                            Düzenle
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 <!-- Düzenleme Modalı -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -89,23 +92,19 @@
 
             $('#saveButton').click(function (e) {
                 e.preventDefault();
-
-                // Kullanıcının girdiği verileri alıyoruz ve virgül varsa, noktaya çeviriyoruz
+ 
                 var activeWorkTime = $('#activeWorkTime').val().replace(',', '.');
                 var maintenanceTime = $('#maintenanceTime').val().replace(',', '.');
-
-                // Sayıları doğru biçimde parse et
+                 
                 var activeWorkTime = parseFloat($('#activeWorkTime').val().replace(',', '.')).toFixed(2);
                 var maintenanceTime = parseFloat($('#maintenanceTime').val().replace(',', '.')).toFixed(2);
 
-
-                // Eğer geçerli bir sayı değilse, kullanıcıya hata mesajı göster
+                 
                 if (isNaN(activeWorkTime) || isNaN(maintenanceTime)) {
                     alert("Lütfen geçerli bir sayı girin.");
                     return;
                 }
-
-                // Toplam çalışma süresi 168'i geçmemeli
+                 
                 var totalTime = activeWorkTime + maintenanceTime;
                 if (totalTime > 168) {
                     alert("Aktif Çalışma Süresi ve Bakım Süresi toplamı 168 saati geçemez.");
