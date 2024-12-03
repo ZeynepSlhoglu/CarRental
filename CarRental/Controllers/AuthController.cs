@@ -14,7 +14,8 @@ namespace CarRental.Controllers
         }
 
         public IActionResult Login()
-        { 
+        {
+            ViewBag.ErrorMessage = TempData["ErrorMessage"];
             return View();
         }
         public async Task<IActionResult> LoginFunc(string username, string password)
@@ -22,11 +23,13 @@ namespace CarRental.Controllers
             var result = await _authService.LoginAsync(username, password);
             if (!result.SuccessStatus)
             {
-                return Unauthorized(result.Message);
+                TempData["ErrorMessage"] = result.Message;
+                return RedirectToAction("Login");
             }
 
             return RedirectToAction("Index", "Home");
         }
+
 
         public IActionResult Register()
         {

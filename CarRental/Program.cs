@@ -1,6 +1,5 @@
 using CarRental;
 using CarRental.CarRental.Application.Auth;
-using CarRental.CarRental.Application.Users;
 using CarRental.CarRental.Application.Vehicles;
 using CarRental.CarRental.Domain.Roles;
 using CarRental.CarRental.Domain.Users;
@@ -10,7 +9,7 @@ using CarRental.CarRental.Infrastructure.Roles;
 using CarRental.CarRental.Infrastructure.Users;
 using CarRental.CarRental.Infrastructure.Vehicles;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies; 
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,18 +22,18 @@ builder.Services.AddControllersWithViews();
 
 #region AddScoped
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>(); 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>(); 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IValidator<User>, UserValidator>();
+
 
 builder.Services.AddScoped<IValidator<(string ActiveWorkTime, string MaintenanceTime)>, WorkTimeValidator>();
 
-builder.Services.AddScoped<IValidator<Vehicle>, VehicleValidator>();
-builder.Services.AddScoped<IValidator<User>, UserValidator>();
+builder.Services.AddScoped<IValidator<Vehicle>, VehicleValidator>(); 
 
 builder.Services.AddScoped<DataSeeder>();
 

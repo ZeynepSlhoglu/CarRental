@@ -1,8 +1,7 @@
-﻿using CarRental.CarRental.Domain.Users;
-using CarRental.CarRental.Infrastructure.Users;
+﻿using CarRental.CarRental.Domain.Users; 
 using FluentValidation;
 
-namespace CarRental.CarRental.Application.Users
+namespace CarRental.CarRental.Application.Auth
 {
     public class UserValidator : AbstractValidator<User>
     {
@@ -15,7 +14,7 @@ namespace CarRental.CarRental.Application.Users
             RuleFor(x => x.Username)
               .NotEmpty().WithMessage("Kullanıcı adı boş olamaz.")
               .MustAsync(BeUniqueUsername).WithMessage("Bu kullanıcı adı zaten alınmış.");
-             
+
         }
 
         private async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
