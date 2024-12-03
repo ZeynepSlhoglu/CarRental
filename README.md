@@ -48,8 +48,6 @@ Docker Compose ile servisleri başlatmak için aşağıdaki komutu çalıştır�
 
 ```bash 
 docker compose up -d
- 
-docker run 
 ```
 3. **Veritabanı Tohumlama (Seeding)**
 Proje başlatıldığında, DataSeeder sınıfı sayesinde gerekli roller (Admin ve User) ile bir Admin kullanıcı otomatik olarak oluşturulacaktır.
@@ -58,10 +56,13 @@ Proje başlatıldığında, DataSeeder sınıfı sayesinde gerekli roller (Admin
 Migration oluşturmak için aşağıdaki komutu çalıştırabilirsiniz:
 
 ```bash 
-dotnet ef migrations add InitialCreate
-dotnet ef migrations update
+dotnet ef database update
 ```
-
+5.  **Projeyi Çalıştırma**
+Son olarak projeyi çalıştırmak için terminalden Program.cs dosyasının olduğu dizine gidip şu komutu çalıştırın:
+```bash 
+dotnet run
+```
 
 ## Demo Video
 
