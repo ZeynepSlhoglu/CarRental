@@ -11,9 +11,7 @@ using CarRental.CarRental.Infrastructure.Vehicles;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.EntityFrameworkCore; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,7 +84,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Console.WriteLine($"Seed iþlemi sýrasýnda bir hata oluþtu: {ex.Message}");
-        throw;
+        throw; 
     }
 }
 
