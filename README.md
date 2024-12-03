@@ -72,6 +72,7 @@ dotnet run
 
 ## Demo Video
 
-Projenin çalışan versiyonunu aşağıdaki linkten izleyebilirsiniz:
+Projenin çalışan versiyonunu aşağıdaki görseli tıklayarak izleyebilirsiniz:
 
-[Proje Demo Videosu](https://www.youtube.com/watch?v=nLbMEAX_OPY)
+[![Proje Demo Videosu](https://img.youtube.com/vi/nLbMEAX_OPY/0.jpg)](https://www.youtube.com/watch?v=nLbMEAX_OPY)
+
